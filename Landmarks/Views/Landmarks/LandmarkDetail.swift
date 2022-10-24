@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct LandmarkDetail: View {
+    @EnvironmentObject var modelData: ModelData
     
     var landmark: Landmark
+    
+    var landmarkIndex: Int{
+        modelData.landmarks.firstIndex(where: {$0.id == landmark.id})! // Was ist dieses Rufzeichen?
+    }
     
     var body: some View {
         ScrollView() {
@@ -21,9 +26,12 @@ struct LandmarkDetail: View {
                 .padding(.bottom, -100)
             
             VStack(alignment: .leading){
-                Text(landmark.name)
-                    .font(.title)
-                    .foregroundColor(Color.green)
+                HStack {
+                    Text(landmark.name)
+                        .font(.title)
+                        .foregroundColor(Color.green)
+                    FavoriteButton(isSet: $modelData.landmarks[landmarkIndex].isFavorite)
+                }
                 HStack {
                     Text(landmark.park)
                         .font(.subheadline)
@@ -46,7 +54,10 @@ struct LandmarkDetail: View {
 }
 
 struct LandmarkDetail_Previews: PreviewProvider {
+    static var modelData = ModelData()
+    
     static var previews: some View {
-        LandmarkDetail(landmark: landmarks[0])
+        LandmarkDetail(landmark: modelData.landmarks[0])
+            .environmentObject(modelData)
     }
 }
